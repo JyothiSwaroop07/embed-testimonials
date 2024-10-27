@@ -1,10 +1,12 @@
 "use client";
 import Image from "next/image";
 
-export default function App() {
+import { ThemeProvider } from "@material-tailwind/react";
+
+export default function App({ Component, pageProps }) {
   return (
-    <div>
-      <h1>Testimonials Embed static</h1>
-    </div>
+    <ThemeProvider>
+      <Component {...pageProps} />
+    </ThemeProvider>
   );
 }
