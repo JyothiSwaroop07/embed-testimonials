@@ -1,0 +1,42 @@
+.mansory-card.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.mansory-card.row-reverse {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.mansory-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  width: 80%;
+  margin: auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mansory-card {
+  justify-content: center;
+  align-items: center;
+  margin: 15px;
+  width: 80%;
+}
+
+.mansory-card-text {
+  width: 40%;
+  height: 20%;
+}
+
+.mansory-card-video {
+  width: 40%;
+  height: 20%;
+  margin-left: 20px;
+  margin-right: 20px;
+}

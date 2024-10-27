@@ -8,6 +8,7 @@ import { use } from 'react';
 import { FaArrowLeft } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa";
 
+import './index.css'
 
 const EmbedTestimonial = ({ params: paramsPromise }) => {
   const params = use(paramsPromise); // Unwrap params Promise
@@ -73,6 +74,29 @@ const EmbedTestimonial = ({ params: paramsPromise }) => {
     return `https://www.youtube.com/embed/${videoId}`;
   };
 
+  console.log(testimonials)
+
+  const RenderMansoryFixedView = ({ testimonial, index }) => {
+    const isEven = index % 2 === 0;
+    
+    return (
+      <div className={`mansory-card ${isEven ? 'row' : 'row-reverse'}`}>
+        <div className="mansory-card-text">
+          <h4>{testimonial.text}</h4>
+        </div>
+        <iframe
+          className="mansory-card-video"
+          src={getYouTubeEmbedUrl(testimonial.video)}
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      </div>
+    );
+  };
+  
+
   return (
     <>
       {layoutType === 'carousels' ? (
@@ -113,9 +137,11 @@ const EmbedTestimonial = ({ params: paramsPromise }) => {
           </div>
         </div>
       ) : (
-        <div>
-          <h1>Masonry fixed testimonials</h1>
-        </div>
+        <div className="mansory-container">
+          {testimonials.map((each, index) => (
+            <RenderMansoryFixedView testimonial={each} key={each.id} index={index} />
+        ))}
+  </div>
       )}
     </>
   );
