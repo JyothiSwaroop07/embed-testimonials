@@ -1,31 +1,31 @@
+// This makes the component render only on the client side
 "use client";
+
+
 import { useState, useEffect } from "react";
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import styles from './carousel.module.css';
-import { db } from '../../../lib/firebase';
-import { use } from 'react';
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { useParams } from "next/navigation"; // For dynamic route params
+import { db } from "@/lib/firebase"; // Adjusted path for 'src' alias
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import styles from "./carousel.module.css";
+import "./index.css"; // Styles for the carousel and masonry views
 
-import { FaArrowLeft } from "react-icons/fa";
-import { FaArrowRight } from "react-icons/fa";
+const EmbedTestimonial = () => {
+  const { layoutType, spaceid } = useParams(); // Extract route params dynamically
 
-import './index.css'
-
-const EmbedTestimonial = ({ params: paramsPromise }) => {
-  const params = use(paramsPromise); // Unwrap params Promise
-  const { layoutType, spaceid } = params;
-  
   const [testimonials, setTestimonials] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Loading state
 
   // Fetch testimonials from Firebase
   const fetchTestimonials = async () => {
+    setLoading(true);
     try {
-      const testimonialsRef = collection(db, 'testimonials');
+      const testimonialsRef = collection(db, "testimonials");
       const q = query(
         testimonialsRef,
-        where('spaceId', '==', spaceid),
-        where('isLiked', '==', true)
+        where("spaceId", "==", spaceid),
+        where("isLiked", "==", true)
       );
 
       const querySnapshot = await getDocs(q);
@@ -35,27 +35,15 @@ const EmbedTestimonial = ({ params: paramsPromise }) => {
       }));
       setTestimonials(fetchedTestimonials);
     } catch (error) {
-      console.error('Error fetching testimonials:', error);
+      console.error("Error fetching testimonials:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (spaceid) fetchTestimonials();
+    if (spaceid) fetchTestimonials(); // Fetch only if spaceid is available
   }, [spaceid]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-gray-900"></div>
-      </div>
-    );
-  }
-
-  if (testimonials.length === 0) {
-    return <p>No testimonials found.</p>;
-  }
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) =>
@@ -69,24 +57,17 @@ const EmbedTestimonial = ({ params: paramsPromise }) => {
     );
   };
 
-  const getYouTubeEmbedUrl = (url) => {
-    const videoId = url.split('v=')[1]?.split('&')[0];
-    return `https://www.youtube.com/embed/${videoId}`;
-  };
-
-  console.log(testimonials)
-
-  const RenderMansoryFixedView = ({ testimonial, index }) => {
+  const RenderMasonryCard = ({ testimonial, index }) => {
     const isEven = index % 2 === 0;
-    
+
     return (
-      <div className={`mansory-card ${isEven ? 'row' : 'row-reverse'}`}>
-        <div className="mansory-card-text">
+      <div className={`masonry-card ${isEven ? "row" : "row-reverse"}`}>
+        <div className="masonry-card-text">
           <h4>{testimonial.text}</h4>
         </div>
         <iframe
-          className="mansory-card-video"
-          src={getYouTubeEmbedUrl(testimonial.video)}
+          className="masonry-card-video"
+          src={testimonial.video}
           title="YouTube video player"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -95,34 +76,39 @@ const EmbedTestimonial = ({ params: paramsPromise }) => {
       </div>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-gray-900"></div>
+      </div>
+    );
+  }
+
   
 
   return (
     <>
-      {layoutType === 'carousels' ? (
+      {layoutType === "carousels" ? (
         <div className={styles.carouselContainer}>
           <div className={styles.controls}>
             <button onClick={handlePrev} className={styles.controlButton}>
-            <FaArrowLeft />
+              <FaArrowLeft />
             </button>
-            
           </div>
-          
+
           <div className={styles.carouselItem}>
             {testimonials[currentIndex].video && (
-              <iframe
-                className={styles.video}
-                src={getYouTubeEmbedUrl(testimonials[currentIndex].video)}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+              <video width="320" height="240" controls preload="none" className={styles.video}>
+                <source src={testimonials[currentIndex].video} type="video/mp4" />
+                
+              </video>
+              
             )}
             {testimonials[currentIndex].text && (
               <div className={styles.textTestimonial}>
                 <p>{testimonials[currentIndex].text}</p>
-                <p style={{ textAlign: 'right' }}>
+                <p style={{ textAlign: "right" }}>
                   — {testimonials[currentIndex].name}
                 </p>
               </div>
@@ -130,18 +116,17 @@ const EmbedTestimonial = ({ params: paramsPromise }) => {
           </div>
 
           <div className={styles.controls}>
-            
             <button onClick={handleNext} className={styles.controlButton}>
-            <FaArrowRight />
+              <FaArrowRight />
             </button>
           </div>
         </div>
       ) : (
-        <div className="mansory-container">
+        <div className="masonry-container">
           {testimonials.map((each, index) => (
-            <RenderMansoryFixedView testimonial={each} key={each.id} index={index} />
-        ))}
-  </div>
+            <RenderMasonryCard testimonial={each} key={each.id} index={index} />
+          ))}
+        </div>
       )}
     </>
   );
