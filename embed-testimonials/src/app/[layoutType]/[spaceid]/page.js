@@ -13,6 +13,8 @@ import "./index.css"; // Styles for the carousel and masonry views
 const EmbedTestimonial = () => {
   const { layoutType, spaceid } = useParams(); // Extract route params dynamically
 
+  console.log(layoutType);
+
   const [testimonials, setTestimonials] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true); // Loading state
@@ -34,6 +36,7 @@ const EmbedTestimonial = () => {
         ...doc.data(),
       }));
       setTestimonials(fetchedTestimonials);
+      console.log(fetchedTestimonials)
     } catch (error) {
       console.error("Error fetching testimonials:", error);
     } finally {
