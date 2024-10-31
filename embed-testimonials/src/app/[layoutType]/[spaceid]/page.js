@@ -68,14 +68,17 @@ const EmbedTestimonial = () => {
         <div className="masonry-card-text">
           <h4>{testimonial.text}</h4>
         </div>
-        <iframe
+        {/* <iframe
           className="masonry-card-video"
           src={testimonial.video}
           title="YouTube video player"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
-        ></iframe>
+        ></iframe> */}
+        <video width="320" height="240" controls preload="none" className="masonry-card-video">
+                <source src={testimonial.video} type="video/mp4" />
+        </video>
       </div>
     );
   };
