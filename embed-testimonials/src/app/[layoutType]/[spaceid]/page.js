@@ -60,28 +60,53 @@ const EmbedTestimonial = () => {
     );
   };
 
+  // const RenderMasonryCard = ({ testimonial, index }) => {
+  //   const isEven = index % 2 === 0;
+
+  //   return (
+  //     <div className="mansory-card">
+  //     <div className={`${isEven ? "row" : "row-reverse"}`}>
+  //       <div className="masonry-card-text">
+  //         <h4>{testimonial.text}</h4>
+  //       </div>
+  //       {/* <iframe
+  //         className="masonry-card-video"
+  //         src={testimonial.video}
+  //         title="YouTube video player"
+  //         frameBorder="0"
+  //         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  //         allowFullScreen
+  //       ></iframe> */}
+  //       <video width="320" height="240" controls preload="none" className="masonry-card-video">
+  //               <source src={testimonial.video} type="video/mp4" />
+  //       </video>
+  //     </div>
+  //     </div>
+  //   );
+  // };
+
   const RenderMasonryCard = ({ testimonial, index }) => {
     const isEven = index % 2 === 0;
 
     return (
-      <div className={`masonry-card ${isEven ? "row" : "row-reverse"}`}>
-        <div className="masonry-card-text">
-          <h4>{testimonial.text}</h4>
-        </div>
-        {/* <iframe
-          className="masonry-card-video"
-          src={testimonial.video}
-          title="YouTube video player"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe> */}
-        <video width="320" height="240" controls preload="none" className="masonry-card-video">
-                <source src={testimonial.video} type="video/mp4" />
-        </video>
+      <div className={`mansory-card ${isEven ? "row" : "row-reverse"}`}>
+          <div className="mansory-text">
+                <h2 className="text">{testimonial.text}
+                <br/><br/>
+                </h2>
+                <h2 className="name">
+                  - {testimonial.name}
+                </h2>
+          </div>
+
+          <div className="video">
+          <video width="400" height="300" controls preload="none" className="masonry-card-video">
+               <source src={testimonial.video} type="video/mp4" />
+          </video>
+          </div>
       </div>
     );
-  };
+  }
 
   if (loading) {
     return (
@@ -105,7 +130,12 @@ const EmbedTestimonial = () => {
 
           <div className={styles.carouselItem}>
             {testimonials[currentIndex].video && (
-              <video width="320" height="240" controls preload="none" className={styles.video}>
+              <video 
+              key={testimonials[currentIndex].video}
+               controls preload="none"
+                className={styles.video}
+                onPlay={(e) => (e.target.currentTime = 0)}
+                >
                 <source src={testimonials[currentIndex].video} type="video/mp4" />
                 
               </video>
@@ -128,7 +158,7 @@ const EmbedTestimonial = () => {
           </div>
         </div>
       ) : (
-        <div className="masonry-container">
+        <div className="mansory-container">
           {testimonials.map((each, index) => (
             <RenderMasonryCard testimonial={each} key={each.id} index={index} />
           ))}

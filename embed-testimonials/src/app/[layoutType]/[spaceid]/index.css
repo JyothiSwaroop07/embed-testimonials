@@ -1,42 +1,81 @@
-.mansory-card.row {
+
+
+.row {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
 }
 
-.mansory-card.row-reverse {
+.row-reverse {
   display: flex;
   flex-direction: row-reverse;
+  justify-content: space-around;
 }
 
-.mansory-container {
+.mansory-container{
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  width: 80%;
-  margin: auto;
-  background-color: #ffffff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  gap: 8px;
+  width: 60vw;
 }
 
-.mansory-card {
-  justify-content: center;
-  align-items: center;
-  margin: 15px;
-  width: 80%;
+.mansory-card{
+  margin-bottom: 70px;
 }
 
-.mansory-card-text {
-  width: 40%;
-  height: 20%;
+.mansory-text{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 300;
+  height: 240;
+  overflow-x: hidden;
+  overflow-y: auto;
+ color: rgb(46, 44, 44);
+ font-style: italic;
 }
 
-.mansory-card-video {
-  width: 40%;
-  height: 20%;
-  margin-left: 20px;
-  margin-right: 20px;
+.text{
+  font-weight: 600;
+  font-size: 14px;
 }
+
+.name{
+align-self: flex-end;
+font-size: 12px;
+}
+
+
+@media (max-width: 768px) { 
+  .mansory-container{
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+  }
+  
+  .mansory-card{
+    display: flex;
+    flex-direction: column-reverse;
+    margin: 0 auto;
+  }
+  
+  .mansory-text{
+    width: 80vw;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .name{
+    align-self: flex-end;
+    font-size: 12px;
+  }
+  
+  .video{
+    margin-top: 32px;
+  }
+
+}
+
