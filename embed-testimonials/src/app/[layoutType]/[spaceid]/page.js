@@ -1,6 +1,4 @@
-// This makes the component render only on the client side
 "use client";
-
 
 import { useState, useEffect } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -18,6 +16,8 @@ const EmbedTestimonial = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true); // Loading state
+  const [videoSource, setVideoSource] = useState(""); // State for video source
+  const [currentResolution, setCurrentResolution] = useState("480p"); // State for current resolution
 
   // Fetch testimonials from Firebase
   const fetchTestimonials = async () => {
@@ -36,7 +36,8 @@ const EmbedTestimonial = () => {
         ...doc.data(),
       }));
       setTestimonials(fetchedTestimonials);
-      console.log(fetchedTestimonials)
+      console.log(fetchedTestimonials);
+      selectVideoSource(fetchedTestimonials[0]); // Set the initial video source
     } catch (error) {
       console.error("Error fetching testimonials:", error);
     } finally {
@@ -48,65 +49,51 @@ const EmbedTestimonial = () => {
     if (spaceid) fetchTestimonials(); // Fetch only if spaceid is available
   }, [spaceid]);
 
+  // Function to select the best video resolution based on network conditions
+  const selectVideoSource = (testimonial) => {
+    let selectedSource;
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const effectiveType = connection ? connection.effectiveType : '4g'; // Default to '4g' if no connection info is available
+
+    if (effectiveType === '2g') {
+      selectedSource = testimonial.video["360"];
+      setCurrentResolution("360p");
+    } else if (effectiveType === '3g') {
+      selectedSource = testimonial.video["480"];
+      setCurrentResolution("480p");
+    } else {
+      selectedSource = testimonial.video["720"];
+      setCurrentResolution("720p");
+    }
+
+    setVideoSource(selectedSource);
+    console.log("Selected Video Source:", selectedSource);
+  };
+
+  // Auto-bitrating based on network speed
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (testimonials.length > 0) {
+        selectVideoSource(testimonials[currentIndex]); // Use the current testimonial
+      }
+    }, 5000); // Check every 5 seconds; adjust as needed
+
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, [testimonials, currentIndex]);
+
   const handleNext = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
     );
+    selectVideoSource(testimonials[(currentIndex + 1) % testimonials.length]); // Update video source on next
   };
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
     );
+    selectVideoSource(testimonials[(currentIndex - 1 + testimonials.length) % testimonials.length]); // Update video source on previous
   };
-
-  // const RenderMasonryCard = ({ testimonial, index }) => {
-  //   const isEven = index % 2 === 0;
-
-  //   return (
-  //     <div className="mansory-card">
-  //     <div className={`${isEven ? "row" : "row-reverse"}`}>
-  //       <div className="masonry-card-text">
-  //         <h4>{testimonial.text}</h4>
-  //       </div>
-  //       {/* <iframe
-  //         className="masonry-card-video"
-  //         src={testimonial.video}
-  //         title="YouTube video player"
-  //         frameBorder="0"
-  //         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  //         allowFullScreen
-  //       ></iframe> */}
-  //       <video width="320" height="240" controls preload="none" className="masonry-card-video">
-  //               <source src={testimonial.video} type="video/mp4" />
-  //       </video>
-  //     </div>
-  //     </div>
-  //   );
-  // };
-
-  const RenderMasonryCard = ({ testimonial, index }) => {
-    const isEven = index % 2 === 0;
-
-    return (
-      <div className={`mansory-card ${isEven ? "row" : "row-reverse"}`}>
-          <div className="mansory-text">
-                <h2 className="text">{testimonial.text}
-                <br/><br/>
-                </h2>
-                <h2 className="name">
-                  - {testimonial.name}
-                </h2>
-          </div>
-
-          <div className="video">
-          <video width="400" height="300" controls preload="none" className="masonry-card-video">
-               <source src={testimonial.video} type="video/mp4" />
-          </video>
-          </div>
-      </div>
-    );
-  }
 
   if (loading) {
     return (
@@ -115,8 +102,6 @@ const EmbedTestimonial = () => {
       </div>
     );
   }
-
-  
 
   return (
     <>
@@ -131,15 +116,14 @@ const EmbedTestimonial = () => {
           <div className={styles.carouselItem}>
             {testimonials[currentIndex].video && (
               <video 
-              key={testimonials[currentIndex].video}
-               controls preload="none"
+                key={testimonials[currentIndex].video}
+                controls preload="none"
                 className={styles.video}
                 onPlay={(e) => (e.target.currentTime = 0)}
-                >
-                <source src={testimonials[currentIndex].video} type="video/mp4" />
-                
+                src={videoSource}
+              >
+                <source src={videoSource} type="video/mp4" />
               </video>
-              
             )}
             {testimonials[currentIndex].text && (
               <div className={styles.textTestimonial}>
