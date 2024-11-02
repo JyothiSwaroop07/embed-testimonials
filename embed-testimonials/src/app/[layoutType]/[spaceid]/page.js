@@ -95,6 +95,29 @@ const EmbedTestimonial = () => {
     selectVideoSource(testimonials[(currentIndex - 1 + testimonials.length) % testimonials.length]); // Update video source on previous
   };
 
+  const RenderMasonryCard = ({ testimonial, index }) => {
+    const isEven = index % 2 === 0;
+
+    return (
+      <div className={`mansory-card ${isEven ? "row" : "row-reverse"}`}>
+          <div className="mansory-text">
+                <h2 className="text">{testimonial.text}
+                <br/><br/>
+                </h2>
+                <h2 className="name">
+                  - {testimonial.name}
+                </h2>
+          </div>
+
+          <div className="video">
+          <video width="400" height="300" controls preload="none" className="masonry-card-video">
+               <source src={videoSource} type="video/mp4" />
+          </video>
+          </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
