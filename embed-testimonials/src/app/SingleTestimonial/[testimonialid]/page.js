@@ -21,6 +21,7 @@ const EmbedSingletestimonial = () => {
 
                     if (docSnap.exists()) {
                         const data = docSnap.data();
+                        console.log(data);
                         setTestimonial(data);
                     } else {
                         console.log("No such document!");
@@ -44,7 +45,7 @@ const EmbedSingletestimonial = () => {
                 preload: "auto",
                 sources: [{
                     // src: testimonial ? testimonial.video["720"] + "/index.m3u8" : "",
-                    src: "https://s3.us-east-1.amazonaws.com/production.testimonialhub/yjyd3gDXVdKqqOe98DIN/dhaa.mp4/master.m3u8", // Adjust the source based on fetched testimonial
+                    src: `${testimonial.video}`, // Adjust the source based on fetched testimonial
                     type: "application/x-mpegURL",
                 }]
             });

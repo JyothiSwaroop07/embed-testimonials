@@ -1,0 +1,50 @@
+.carouselContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    width: 80%;
+    margin: auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  }
+  
+  .carouselItem {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .video {
+    width: 75%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin: 0 auto;
+  }
+  
+  .textTestimonial {
+    padding: 20px;
+    font-weight: 500;
+    font-style: italic;
+  }
+  
+  .controls {
+    margin: 0 5px;
+  }
+  
+  .controlButton {
+    padding: 5px 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .controlButton:hover {
+    background-color: #0056b3;
+  }
